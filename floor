@@ -1,0 +1,79 @@
+-- This program will build a flat layer of blocks of,
+-- the specified length and width, the floors width will be
+-- expanded to the right.
+
+-- Usage: floor.lua <length> <width> <lighting offset>
+
+params = {...}
+-- The input is text so we convert the text to a number.
+floorLength = tonumber(params[1])
+floorWidth = tonumber(params[2])
+floorLight = tonumber(params[3])
+
+matSlot = 1
+lightSlot = 3
+
+-- This variable is used to alternate which way we are turning.
+turnRight = true
+
+function checkSlot()
+  if turtle.getItemCount(currentSlot) == 0 then
+    turtle.select(currentSlot + 1)
+    turtle.placeUp()
+    sleep(1)
+    turtle.select(currentSlot)
+    turtle.suckUp()
+    sleep(1)
+    turtle.select(currentSlot+1)
+    turtle.digUp()
+  end
+end
+
+currentSlot = matSlot
+turtle.up()
+checkSlot()
+currentSlot = lightSlot
+checkSlot()
+
+for width = 1, floorWidth do
+
+  for length = 1, floorLength do
+
+    currentSlot = matSlot
+    if ((width + math.floor(floorLight / 2)) % floorLight) == 0 then
+      if turnRight then
+        if ((length + math.floor(floorLight / 2)) % floorLight) == 0 then
+          currentSlot = lightSlot
+        end
+      else
+        if ((floorLength - length - math.floor(floorLight / 2))% floorLight ) == 0 then
+          currentSlot = lightSlot
+        end
+      end
+    end
+    
+    turtle.select(currentSlot)
+    turtle.placeDown()
+    checkSlot()
+    if length ~= floorLength then
+      turtle.forward()
+    end
+    
+  end
+  
+  -- When you get to the end of a row of blocks you need to turn around and setup for the next row,
+  -- but every time you turn around you need to alternate the way that you turn.
+  -- If this is confusing try drawing it out on a peice of paper.
+  if turnRight then
+    turtle.turnRight()
+    turtle.forward()
+    turtle.turnRight()
+  else
+    turtle.turnLeft()
+    turtle.forward()
+    turtle.turnLeft()
+  end
+  
+  -- Change so that we turn the other way next time.
+  turnRight = not turnRight
+end

@@ -1,0 +1,46 @@
+-- This program will allow a turtle to build a wall,
+-- you must give the turtle enough blocks to build the wall.
+
+-- Usage: wall.lua length height
+
+input = {...}
+wallLength = tonumber(input[1])
+
+-- The starting slot to look for building materials (from left to right, top to bottem)
+--ie. 1 2 3
+--    4 5 6
+--    7 8 9
+currentSlot = 1
+
+-- This is a function, it is peice of script that we will run later.
+-- If this inventory slot runs out of building blocks, move to the next slot.
+function gotoNextSlotIfEmpty()
+  while turtle.getItemCount(currentSlot) == 0 do
+    currentSlot = currentSlot + 1
+    turtle.select(currentSlot)
+  end
+end
+
+-- This is where the code starts running.
+turtle.select(currentSlot)
+
+
+for length = 1, wallLength do
+
+  bottom = false
+  wallHeight = 0
+  while not bottom do
+    bottom = not turtle.down()
+	if not bottom then
+	  wallHeight = wallHeight + 1
+	end
+  end
+  
+  for height = 1, wallHeight do
+    turtle.up()
+    turtle.placeDown()
+    gotoNextSlotIfEmpty() -- This call runs the function above, functions must be placed above where they are used.
+  end
+  
+turtle.forward()
+end
