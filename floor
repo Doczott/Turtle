@@ -20,6 +20,10 @@ turnRight = true
 
 function checkSlot(currentSlot)
   if turtle.getItemCount(currentSlot) == 0 then
+    if turtle.detectUp() then
+      turtle.select(mSlot)
+      turtle.digUp()
+    end
     turtle.select(currentSlot + 1)
     turtle.placeUp()
     turtle.select(currentSlot)
