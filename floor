@@ -111,7 +111,7 @@ for width = 1, floorWidth do
     end
     
     turtle.select(currentSlot)
-    if not turtle.detectDown() then
+    if turtle.detectDown() then
       if not turtle.compareDown() then
         turtle.select(mSlot)
         turtle.digDown()
@@ -132,14 +132,16 @@ for width = 1, floorWidth do
   -- When you get to the end of a row of blocks you need to turn around and setup for the next row,
   -- but every time you turn around you need to alternate the way that you turn.
   -- If this is confusing try drawing it out on a peice of paper.
-  if turnRight then
-    turtle.turnRight()
-    moveForward()
-    turtle.turnRight()
-  else
-    turtle.turnLeft()
-    moveForward()
-    turtle.turnLeft()
+  if width ~= floorWidth then
+    if turnRight then
+      turtle.turnRight()
+      moveForward()
+      turtle.turnRight()
+    else
+      turtle.turnLeft()
+      moveForward()
+      turtle.turnLeft()
+    end
   end
   
   -- Change so that we turn the other way next time.
