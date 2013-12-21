@@ -1,0 +1,73 @@
+input = {...}
+blockLength = tonumber(input[1])
+blockWidth = tonumber(input[1])
+blockHeight = tonumber(input[1])
+
+mslot = 7
+matSlot = 1
+enderSlot = 16
+
+-- If this inventory slot runs out of building blocks, resupply from the ender chest in the next slot.
+function checkSlot(currentSlot)
+  if turtle.getItemCount(currentSlot) == 0 then
+    turtle.select(currentSlot + 1)
+    turtle.placeUp()
+    turtle.select(currentSlot)
+    turtle.suckUp()
+    turtle.select(currentSlot + 1)
+    turtle.digUp()
+    turtle.select(currentSlot)
+  end
+end
+
+function moveForward()
+  moved = false
+  while not moved do
+    if turtle.forward() then
+	  moved = true
+	else
+	  turtle.select(mSlot)
+	  turtle.dig()
+	  sleep(1)
+	  if checkStorage() and not turtle.detect() then
+	    emptyStorage(1)
+	  end
+	end
+  end
+end
+
+function emptyStorage(dir)
+  turtle.select(enderSlot)
+  if dir == 0 then
+    turtle.placeDown()
+  else 
+    if dir == 1 then
+      turtle.place()
+	else
+	  turtle.placeUp()
+	end
+  end
+  for i = 7, 15 do
+    turtle.select(i)
+    if dir == 0 then
+      turtle.dropDown()
+    else
+      if dir == 1 then
+	    turtle.drop()
+      else
+	    turtle.dropUp()
+	  end
+    end
+  end
+  turtle.select(enderSlot)
+  if dir == 0 then
+    turtle.digDown()
+  else
+    if dir == 1 then
+      turtle.dig()
+	else
+	  turtle.digUp()
+	end
+  end
+end
+

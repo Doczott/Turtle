@@ -1,0 +1,149 @@
+
+params = {...}
+-- The input is text so we convert the text to a number.
+towerLength = tonumber(params[1])
+towerWidth = tonumber(params[2])
+towerHeight = tonumber(params[3])
+
+matSlot = 1
+enderSlot = 16
+mSlot = 7
+
+-- This variable is used to alternate which way we are turning.
+turnRight = true
+
+function checkSlot()
+  if turtle.getItemCount(currentSlot) == 0 then
+    turtle.select(currentSlot + 1)
+    turtle.placeDown()
+    sleep(1)
+    turtle.select(currentSlot)
+    turtle.suckDown()
+    sleep(1)
+    turtle.select(currentSlot+1)
+    turtle.digDown()
+    sleep(1)
+  end
+end
+
+function emptyStorage()
+
+  turtle.select(enderSlot)
+  turtle.placeDown()
+  sleep(1)
+  
+  for i = 7, 15 do
+    turtle.select(i)
+    turtle.dropDown()
+  end
+  
+  sleep(1)
+  turtle.select(enderSlot)
+  turtle.digDown()
+  sleep(1)
+  
+end
+
+function mineUp()
+  turtle.select(mslot)
+  turtle.digUp()
+end
+    
+function mineDown()
+  turtle.select(mslot)
+  turtle.digDown()
+end
+
+function mineForward()
+mined = false
+mslot = 7
+turtle.select(mslot)
+while not mined do
+  if turtle.dig() then
+    sleep(1)
+  end
+  mined = not turtle.detect()
+end
+end
+
+function placeDown()
+
+  checkSlot()
+  turtle.select(matSlot)
+  if not turtle.compareDown() then
+    turtle.placeDown()
+  end
+end
+
+
+function moveUp()
+  mineUp()
+  if checkStorage() then
+    emptyStorage()
+  end
+  turtle.up()
+end
+
+function moveForward()
+  turtle.forward()
+end
+
+function checkStorage()
+  full = true
+  if turtle.getItemCount(15) == 0 then
+    full = false
+  end
+  return full
+end
+
+currentSlot = matSlot
+moveUp()
+checkSlot()
+
+for height = 1, towerHeight do
+ for j = 1, 2 do
+  for length = 1, towerLength do
+
+    mineDown()
+    if checkStorage() then
+      emptyStorage()
+    end
+    if length < towerLength then
+      mineForward()
+      if checkStorage() then
+        emptyStorage()
+      end
+    end
+    placeDown()
+    if length < towerLength then
+      moveForward()
+    else
+      turtle.turnLeft()
+    end
+  end
+  
+  for width = 1, towerWidth do
+    mineDown()
+    if checkStorage() then
+      emptyStorage()
+    end
+    if width < towerWidth then
+      mineForward()
+      if checkStorage() then
+        emptyStorage()
+      end
+    end
+    placeDown()
+    if width < towerWidth then
+      moveForward()
+    else
+      turtle.turnLeft()
+    end
+  end
+ end
+ if height < towerHeight then
+   moveUp()
+ end
+end
+
+

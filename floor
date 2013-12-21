@@ -12,28 +12,86 @@ floorLight = tonumber(params[3])
 
 matSlot = 1
 lightSlot = 3
+mSlot = 7
+enderSlot = 16
 
 -- This variable is used to alternate which way we are turning.
 turnRight = true
 
-function checkSlot()
+function checkSlot(currentSlot)
   if turtle.getItemCount(currentSlot) == 0 then
     turtle.select(currentSlot + 1)
     turtle.placeUp()
-    sleep(1)
     turtle.select(currentSlot)
     turtle.suckUp()
-    sleep(1)
-    turtle.select(currentSlot+1)
+    turtle.select(currentSlot + 1)
     turtle.digUp()
+    turtle.select(currentSlot)
   end
 end
 
-currentSlot = matSlot
+function moveForward()
+  moved = false
+  while not moved do
+    if turtle.forward() then
+	  moved = true
+	else
+	  turtle.select(mSlot)
+	  turtle.dig()
+	  sleep(1)
+	  if checkStorage() and not turtle.detect() then
+	    emptyStorage(2)
+	  end
+	end
+  end
+end
+
+function checkStorage()
+  full = true
+  if turtle.getItemCount(15) == 0 then
+    full = false
+  end
+  return full
+end
+
+function emptyStorage(dir)
+  turtle.select(enderSlot)
+  if dir == 0 then
+    turtle.placeDown()
+  else 
+    if dir == 1 then
+      turtle.place()
+	else
+	  turtle.placeUp()
+	end
+  end
+  for i = 7, 15 do
+    turtle.select(i)
+    if dir == 0 then
+      turtle.dropDown()
+    else
+      if dir == 1 then
+	    turtle.drop()
+      else
+	    turtle.dropUp()
+	  end
+    end
+  end
+  turtle.select(enderSlot)
+  if dir == 0 then
+    turtle.digDown()
+  else
+    if dir == 1 then
+      turtle.dig()
+    else
+      turtle.digUp()
+    end
+  end
+end
+
 turtle.up()
-checkSlot()
-currentSlot = lightSlot
-checkSlot()
+checkSlot(matSlot)
+checkSlot(lightSlot)
 
 for width = 1, floorWidth do
 
@@ -53,10 +111,20 @@ for width = 1, floorWidth do
     end
     
     turtle.select(currentSlot)
+    if not turtle.detectDown() then
+      if not turtle.compareDown() then
+        turtle.select(mSlot)
+        turtle.digDown()
+        if checkStorage() then
+          emptyStorage()
+        end
+      end
+    end
+    turtle.select(currentSlot)
     turtle.placeDown()
-    checkSlot()
+    checkSlot(currentSlot)
     if length ~= floorLength then
-      turtle.forward()
+      moveForward()
     end
     
   end
@@ -66,11 +134,11 @@ for width = 1, floorWidth do
   -- If this is confusing try drawing it out on a peice of paper.
   if turnRight then
     turtle.turnRight()
-    turtle.forward()
+    moveForward()
     turtle.turnRight()
   else
     turtle.turnLeft()
-    turtle.forward()
+    moveForward()
     turtle.turnLeft()
   end
   
