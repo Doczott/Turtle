@@ -12,15 +12,15 @@ mSlot = 7
 -- This variable is used to alternate which way we are turning.
 turnRight = true
 
-function checkSlot()
-  if turtle.getItemCount(currentSlot) == 0 then
-    turtle.select(currentSlot + 1)
+function checkSlot(slot)
+  if turtle.getItemCount(slot) == 0 then
+    turtle.select(slot + 1)
     turtle.placeDown()
     sleep(1)
-    turtle.select(currentSlot)
+    turtle.select(slot)
     turtle.suckDown()
     sleep(1)
-    turtle.select(currentSlot+1)
+    turtle.select(slot+1)
     turtle.digDown()
     sleep(1)
   end
@@ -68,7 +68,7 @@ end
 
 function placeDown()
 
-  checkSlot()
+  checkSlot(matSlot)
   turtle.select(matSlot)
   if not turtle.compareDown() then
     turtle.placeDown()
@@ -96,9 +96,8 @@ function checkStorage()
   return full
 end
 
-currentSlot = matSlot
 moveUp()
-checkSlot()
+checkSlot(matSlot)
 
 for height = 1, towerHeight do
  for j = 1, 2 do
