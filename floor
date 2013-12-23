@@ -102,6 +102,7 @@ function emptyStorage(dir)
   end
 end
 
+checkFuel()
 turtle.up()
 checkSlot(matSlot)
 checkSlot(lightSlot)
