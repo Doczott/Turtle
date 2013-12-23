@@ -12,7 +12,8 @@ floorLight = tonumber(params[3])
 
 matSlot = 1
 lightSlot = 3
-mSlot = 7
+fuelSlot = 7
+mSlot = 9
 enderSlot = 16
 
 -- This variable is used to alternate which way we are turning.
@@ -31,6 +32,14 @@ function checkSlot(currentSlot)
     turtle.select(currentSlot + 1)
     turtle.digUp()
     turtle.select(currentSlot)
+  end
+end
+
+function checkFuel()
+  if turtle.getFuelLevel() < 20 then
+    checkSlot(fuelSlot)
+    turtle.select(fuelSlot)
+    turtle.refuel()
   end
 end
 
@@ -100,7 +109,7 @@ checkSlot(lightSlot)
 for width = 1, floorWidth do
 
   for length = 1, floorLength do
-
+    checkFuel()
     currentSlot = matSlot
     if ((width + math.floor(floorLight / 2)) % floorLight) == 0 then
       if turnRight then
