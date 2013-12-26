@@ -15,18 +15,18 @@ fuelSlot = 7
 placeDir = 1
 
 -- If this inventory slot runs out of building blocks, resupply from the ender chest in the next slot.
-function checkSlot()
-  if turtle.getItemCount(currentSlot) == 0 then
-    turtle.select(currentSlot + 1)
-    turtle.placeUp()
-    turtle.select(currentSlot)
+function checkSlot(cSlot)
+  if turtle.getItemCount(cSlot) == 0 then
+    turtle.select(cSlot + 1)
+    turtle.place()
+    turtle.select(cSlot)
     sleep(1)
-    turtle.suckUp()
-    turtle.select(currentSlot + 1)
+    turtle.suck()
+    turtle.select(cSlot + 1)
     sleep(1)
-    turtle.digUp()
+    turtle.dig()
     sleep(1)
-    turtle.select(currentSlot)
+    turtle.select(cSlot)
   end
 end
 
@@ -100,10 +100,8 @@ end
 
 -- This is where the code starts running.
 checkFuel()
-currentSlot = edgeSlot
-checkSlot()
-currentSlot = sideSlot
-checkSlot()
+checkSlot(edgeSlot)
+checkSlot(sideSlot)
 turtle.up()
 left = true
 if multiTank == null then
@@ -135,7 +133,7 @@ for height = 1, tankHeight do
         end
 
         if th or tw or tl then  
-          checkSlot()
+          checkSlot(currentSlot)
           turtle.select(currentSlot)
           turtle.placeDown()
         end
