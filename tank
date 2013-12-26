@@ -1,0 +1,174 @@
+
+input = {...}
+tankLength = tonumber(input[1])
+tankWidth = tonumber(input[2])
+tankHeight = tonumber(input[3])
+multiTank = tonumber(input[4])
+currentSlot = 1
+
+-- edgeslot is the slot for the materials that will be used to construct the corners of the tank. sideslot is the slot
+-- for the materials that will be used to construct the sides of the tank. (ie. stone corners with glass sides)
+edgeSlot = 1
+sideSlot = 5
+mSlot = 9
+fuelSlot = 7
+placeDir = 1
+
+-- If this inventory slot runs out of building blocks, resupply from the ender chest in the next slot.
+function checkSlot()
+  if turtle.getItemCount(currentSlot) == 0 then
+    turtle.select(currentSlot + 1)
+    turtle.placeUp()
+    turtle.select(currentSlot)
+    sleep(1)
+    turtle.suckUp()
+    turtle.select(currentSlot + 1)
+    sleep(1)
+    turtle.digUp()
+    sleep(1)
+    turtle.select(currentSlot)
+  end
+end
+
+function checkFuel()
+  if turtle.getFuelLevel() < 20 then
+    checkSlot(fuelSlot)
+    turtle.select(fuelSlot)
+    turtle.refuel()
+  end
+end
+
+function moveForward()
+  moved = false
+  while not moved do
+    if turtle.forward() then
+	  moved = true
+	else
+	  turtle.select(mSlot)
+	  turtle.dig()
+	  sleep(1)
+	  if checkStorage() and not turtle.detect() then
+	    emptyStorage(placeDir)
+	  end
+	end
+  end
+end
+
+function checkStorage()
+  full = true
+  if turtle.getItemCount(15) == 0 then
+    full = false
+  end
+  return full
+end
+
+function emptyStorage(dir)
+  turtle.select(enderSlot)
+  if dir == 0 then
+    turtle.placeDown()
+  else 
+    if dir == 1 then
+      turtle.place()
+	else
+	  turtle.placeUp()
+	end
+  end
+  for i = 7, 15 do
+    turtle.select(i)
+    if dir == 0 then
+      turtle.dropDown()
+    else
+      if dir == 1 then
+	    turtle.drop()
+      else
+	    turtle.dropUp()
+	  end
+    end
+  end
+  turtle.select(enderSlot)
+  if dir == 0 then
+    turtle.digDown()
+  else
+    if dir == 1 then
+      turtle.dig()
+    else
+      turtle.digUp()
+    end
+  end
+end
+
+
+-- This is where the code starts running.
+checkFuel()
+currentSlot = edgeSlot
+checkSlot()
+currentSlot = sideSlot
+checkSlot()
+turtle.up()
+left = true
+if multiTank == null then
+  multiTank = 1
+end
+
+for height = 1, tankHeight do
+  for width = 1, tankWidth do
+    for tank = 1, multiTank do
+      for length = 1, tankLength do
+        checkFuel()
+        if tank > 1 and length == 1 then
+          length = 2
+        end
+        th = height == 1 or height == tankHeight
+        tw = width == 1 or width == tankWidth
+        tl = length == 1 or length == tankLength
+
+        if th and tw then
+          currentSlot = edgeSlot
+        else if th and tl then
+            currentSlot = edgeSlot
+          else if tw and tl then
+              currentSlot = edgeSlot
+            else
+              currentSlot = sideSlot
+            end
+          end
+        end
+
+        if th or tw or tl then  
+          checkSlot()
+          turtle.select(currentSlot)
+          turtle.placeDown()
+        end
+
+        if length < tankLength then
+          moveForward()
+        end
+      end
+    end
+    if width < tankWidth then
+      if left then
+        turtle.turnLeft()
+        turtle.forward()
+        turtle.turnLeft()
+      else
+        turtle.turnRight()
+        turtle.forward()
+        turtle.turnRight()
+      end	
+      left = not left
+    else
+      rot = tankWidth % 2
+      if rot == 1 then
+        left = true
+      else
+        rot = height % 2
+        left = rot == 0
+      end
+    end
+  end
+
+  turtle.up()
+  turtle.turnLeft()
+  turtle.turnLeft()
+
+end
