@@ -28,7 +28,12 @@ function checkSlot(currentSlot)
     turtle.select(currentSlot + 1)
     turtle.placeUp()
     turtle.select(currentSlot)
-    turtle.suckUp()
+    while turtle.getItemCount(currentSlot) < 64 do
+      turtle.suckUp()
+      if turtle.getItemCount(currentSlot) < 64 then
+        sleep(5)
+      end
+    end
     turtle.select(currentSlot + 1)
     turtle.digUp()
     turtle.select(currentSlot)
@@ -78,7 +83,7 @@ function emptyStorage(dir)
 	  turtle.placeUp()
 	end
   end
-  for i = 7, 15 do
+  for i = mSlot, 15 do
     turtle.select(i)
     if dir == 0 then
       turtle.dropDown()
