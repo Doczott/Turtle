@@ -7,10 +7,18 @@ towerHeight = tonumber(params[3])
 
 matSlot = 1
 enderSlot = 16
-mSlot = 7
-
+mSlot = 9
+fuelSlot = 7
 -- This variable is used to alternate which way we are turning.
 turnRight = true
+
+function checkFuel()
+  if turtle.getFuelLevel() < 20 then
+    checkSlot(fuelSlot)
+    turtle.select(fuelSlot)
+    turtle.refuel()
+  end
+end
 
 function checkSlot(slot)
   if turtle.getItemCount(slot) == 0 then
@@ -104,6 +112,7 @@ for height = 1, towerHeight do
   for length = 1, towerLength do
 
     mineDown()
+    checkFuel()
     if checkStorage() then
       emptyStorage()
     end
@@ -123,6 +132,7 @@ for height = 1, towerHeight do
   
   for width = 1, towerWidth do
     mineDown()
+    checkFuel()
     if checkStorage() then
       emptyStorage()
     end

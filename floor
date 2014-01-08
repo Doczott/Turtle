@@ -31,7 +31,7 @@ function checkSlot(currentSlot)
     while turtle.getItemCount(currentSlot) < 64 do
       turtle.suckUp()
       if turtle.getItemCount(currentSlot) < 64 then
-        sleep(5)
+        sleep(1)
       end
     end
     turtle.select(currentSlot + 1)
