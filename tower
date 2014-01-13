@@ -58,14 +58,14 @@ function mineUp()
 end
     
 function mineDown()
-  turtle.select(mslot)
+  turtle.select(mSlot)
   turtle.digDown()
 end
 
 function mineForward()
 mined = false
 mslot = 7
-turtle.select(mslot)
+turtle.select(mSlot)
 while not mined do
   if turtle.dig() then
     sleep(1)
