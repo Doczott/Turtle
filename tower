@@ -24,13 +24,13 @@ function checkSlot(slot)
   if turtle.getItemCount(slot) == 0 then
     turtle.select(slot + 1)
     turtle.placeDown()
-    sleep(1)
+    sleep(0.1)
     turtle.select(slot)
     turtle.suckDown()
-    sleep(1)
+    sleep(0.1)
     turtle.select(slot+1)
     turtle.digDown()
-    sleep(1)
+    sleep(0.1)
   end
 end
 
@@ -38,17 +38,17 @@ function emptyStorage()
 
   turtle.select(enderSlot)
   turtle.placeDown()
-  sleep(1)
+  sleep(0.1)
   
   for i = mSlot, 15 do
     turtle.select(i)
     turtle.dropDown()
   end
   
-  sleep(1)
+  sleep(0.1)
   turtle.select(enderSlot)
   turtle.digDown()
-  sleep(1)
+  sleep(0.1)
   
 end
 
@@ -68,7 +68,7 @@ mslot = 7
 turtle.select(mSlot)
 while not mined do
   if turtle.dig() then
-    sleep(1)
+    sleep(0.1)
   end
   mined = not turtle.detect()
 end
