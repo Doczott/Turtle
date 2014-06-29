@@ -74,6 +74,7 @@ function moveUp()
 	end
   end
 end
+
 function checkStorage()
   return (turtle.getItemCount(15) != 0)
 end
