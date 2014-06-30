@@ -12,27 +12,45 @@ currentSlot = 1
 
 edgeSlot = 1
 sideSlot = 5
-mSlot = 9
+valveSlot = 9
+mSlot = 11
 fuelSlot = 7
 DOWN = 0
 FRONT = 1
+FORWARD = 1
 UP = 2
-placeDir = FRONT
 
--- If this inventory slot runs out of building blocks, resupply from the ender chest in the next slot.
+-- If an inventory slot runs out of materials, resupply from the ender chest in the next slot.
 function checkSlot(cSlot)
   if turtle.getItemCount(cSlot) == 0 then
+    dir = openSpace()
     turtle.select(cSlot + 1)
-    turtle.placeDown()
+    place(dir)
     turtle.select(cSlot)
-    sleep(0.1)
-    turtle.suckDown()
+    suck(dir)
     turtle.select(cSlot + 1)
-    sleep(0.1)
-    turtle.digDown()
-    sleep(0.1)
+    dig(dir)
     turtle.select(cSlot)
   end
+end
+
+function openSpace()
+  if not detect(DOWN) then
+    dir = DOWN
+  else
+    if not detect(UP) then
+      dir = UP
+    else
+      if not detect(FRONT) then
+        dir = FRONT
+      else
+        turtle.select(mSlot)
+        dig(UP)
+        dir = UP
+      end
+    end
+  end
+  return dir
 end
 
 function checkFuel()
@@ -43,81 +61,41 @@ function checkFuel()
   end
 end
 
-function moveForward()
+function go(dir)
   moved = false
   while not moved do
-    if turtle.forward() then
-	  moved = true
-	else
-	  turtle.select(mSlot)
-	  turtle.dig()
-	  sleep(1)
-	  if checkStorage() and not turtle.detect() then
-	    emptyStorage(FRONT)
-	  end
-	end
-  end
-end
-
-function moveUp()
-  moved = false
-  while not moved do
-    if turtle.up() then
-	  moved = true
-	else
-	  turtle.select(mSlot)
-	  turtle.digUp()
-	  sleep(1)
-	  if checkStorage() and not turtle.detect() then
-	    emptyStorage(UP)
-	  end
-	end
+    if move(dir) then
+      moved = true
+    else
+      turtle.select(mSlot)
+      dig(dir)
+      if checkStorage() and not detect(dir) then
+        emptyStorage(dir)
+      end
+    end
   end
 end
 
 function checkStorage()
-  return (turtle.getItemCount(15) != 0)
+  full = not (turtle.getItemCount(15) == 0)
+  return full
 end
 
 function emptyStorage(dir)
   turtle.select(enderSlot)
-  if dir == 0 then
-    turtle.placeDown()
-  else 
-    if dir == 1 then
-      turtle.place()
-	else
-	  turtle.placeUp()
-	end
-  end
+  place(dir)
   for i = mSlot, 15 do
     turtle.select(i)
-    if dir == 0 then
-      turtle.dropDown()
-    else
-      if dir == 1 then
-	    turtle.drop()
-      else
-	    turtle.dropUp()
-	  end
-    end
+    drop(dir)
   end
   turtle.select(enderSlot)
-  if dir == 0 then
-    turtle.digDown()
-  else
-    if dir == 1 then
-      turtle.dig()
-    else
-      turtle.digUp()
-    end
-  end
+  dig(dir)
 end
 
 function placeBlock(mat)
-  while turtle.detectDown() do
+  while detect(DOWN) do
     turtle.select(mSlot)
-    turtle.digDown()
+    dig(DOWN)
     if checkStorage() then
       emptyStorage(DOWN)
     end
@@ -125,11 +103,112 @@ function placeBlock(mat)
   checkFuel()
   checkSlot(mat)
   turtle.select(mat)
-  turtle.placeDown()
+  place(DOWN)
 end
-  
+
+function place(dir)
+  if dir == DOWN then
+    det = turtle.placeDown()
+  else 
+    if dir == FRONT then
+      det = turtle.place()
+	else
+	  det = turtle.placeUp()
+	end
+  return det
+end
+
+function detect(dir)
+  if dir == DOWN then
+    det = turtle.detectDown()
+  else 
+    if dir == FRONT then
+      det = turtle.detect()
+	else
+	  det = turtle.detectUp()
+	end
+  return det
+end
+
+function dig(dir)
+  if dir == DOWN then
+    det = turtle.digDown()
+  else 
+    if dir == FRONT then
+      det = turtle.dig()
+	else
+	  det = turtle.digUp()
+	end
+  return det
+end
+
+function suck(dir)
+  if dir == DOWN then
+    det = turtle.suckDown()
+  else 
+    if dir == FRONT then
+      det = turtle.suck()
+	else
+	  det = turtle.suckUp()
+	end
+  return det
+end
+
+function drop(dir)
+  if dir == DOWN then
+    det = turtle.dropDown()
+  else 
+    if dir == FRONT then
+      det = turtle.drop()
+	else
+	  det = turtle.dropUp()
+	end
+  return det
+end
+
+function move(dir)
+  if dir == DOWN then
+    det = turtle.down()
+  else 
+    if dir == FORWARD then
+      det = turtle.forward()
+	else
+	  det = turtle.up()
+	end
+  return det
+end
+
+function unload()
+  dir = openSpace()
+  turtle.select(16)
+  place(dir)
+  for i = 1, 16 do
+    turtle.select(i)
+    drop(dir)
+    sleep(1)
+  end
+  turtle.select(16)
+  dir(dir)
+end
+
+function load()
+  dir = openSpace()
+  turtle.select(16)
+  place(dir)
+  slt = 2
+  while slt < mSlot do
+    turtle.select(slt)
+    suck(dir)
+    slt = slt + 2
+  end
+  turtle.select(16)
+  dig(dir)
+end
+
 -- This is where the code starts running.
-turtle.moveUp()
+load()
+moveForward()
+moveUp()
 left = true
 if multiTank == null then
   multiTank = 1
@@ -157,40 +236,43 @@ for height = 1, tankHeight do
             end
           end
         end
-
+        
+        if height == 2 and width == (tankWidth - 1) and tank < multiTank then
+          currentSlot = valveSlot
+        end
+        
         if th or tw or tl then  
           placeBlock(currentSlot)
         end
 
         if length < tankLength then
-          moveForward()
+          move(FORWARD)
         end
       end
     end
     if width < tankWidth then
       if left then
         turtle.turnLeft()
-        turtle.forward()
+        move(FORWARD)
         turtle.turnLeft()
       else
         turtle.turnRight()
-        turtle.forward()
+        move(FORWARD)
         turtle.turnRight()
       end	
       left = not left
     else
-      rot = tankWidth % 2
-      if rot == 1 then
-        left = true
-      else
-        rot = height % 2
-        left = rot == 0
+      left = (tankWidth % 2) == 1
+      if not left then
+        left = (height % 2) == 0
       end
     end
   end
 
-  turtle.moveUp()
+  move(UP)
   turtle.turnLeft()
   turtle.turnLeft()
 
 end
+
+unload()
