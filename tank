@@ -226,6 +226,7 @@ for height = 1, tankHeight do
     for tank = 1, multiTank do
       for length = 1, tankLength do
         if tank > 1 and length == 1 then
+          go(FORWARD)
           length = 2
         end
         th = height == 1 or height == tankHeight
@@ -249,7 +250,7 @@ for height = 1, tankHeight do
           placeBlock(currentSlot)
         end
 
-        if length < tankLength or tank < multiTank then
+        if length < tankLength then
           go(FORWARD)
         end
       end
