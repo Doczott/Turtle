@@ -225,10 +225,6 @@ for height = 1, tankHeight do
   for width = 1, tankWidth do
     for tank = 1, multiTank do
       for length = 1, tankLength do
-        if tank > 1 and length == 1 then
-          go(FORWARD)
-          length = 2
-        end
         th = height == 1 or height == tankHeight
         tw = width == 1 or width == tankWidth
         tl = length == 1 or length == tankLength
@@ -246,7 +242,7 @@ for height = 1, tankHeight do
         end
         -- print(currentSlot)
         -- print(vs)
-        if th or tw or tl then  
+        if (th or tw or tl) and not (tank > 1 and length == 1) then  
           placeBlock(currentSlot)
         end
 
