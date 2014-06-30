@@ -19,6 +19,7 @@ DOWN = 0
 FRONT = 1
 FORWARD = 1
 UP = 2
+enderSlot = 16
 
 -- If an inventory slot runs out of materials, resupply from the ender chest in the next slot.
 function checkSlot(cSlot)
@@ -186,20 +187,20 @@ end
 
 function unload()
   dir = openSpace()
-  turtle.select(16)
+  turtle.select(enderSlot)
   place(dir)
   for i = 1, 16 do
     turtle.select(i)
     drop(dir)
     sleep(1)
   end
-  turtle.select(16)
+  turtle.select(enderSlot)
   dir(dir)
 end
 
 function load()
   dir = openSpace()
-  turtle.select(16)
+  turtle.select(enderSlot)
   place(dir)
   slt = 2
   while slt < mSlot do
@@ -207,7 +208,7 @@ function load()
     suck(dir)
     slt = slt + 2
   end
-  turtle.select(16)
+  turtle.select(enderSlot)
   dig(dir)
 end
 
@@ -242,11 +243,13 @@ for height = 1, tankHeight do
             end
           end
         end
-        
-        if height == 2 and width == (tankWidth - 1) and tank < multiTank then
+        -- print(currentSlot)
+        vs = height == 2 and width == (tankWidth - 1) and (tank < multiTank or (multiTank == 1 and length < tankLength))
+        if vs then
           currentSlot = valveSlot
         end
-        
+        -- print(currentSlot)
+        -- print(vs)
         if th or tw or tl then  
           placeBlock(currentSlot)
         end
