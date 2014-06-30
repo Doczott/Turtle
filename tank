@@ -213,8 +213,8 @@ end
 
 -- This is where the code starts running.
 load()
-move(FORWARD)
-move(UP)
+go(FORWARD)
+go(UP)
 left = true
 if multiTank == null then
   multiTank = 1
@@ -252,18 +252,18 @@ for height = 1, tankHeight do
         end
 
         if length < tankLength then
-          move(FORWARD)
+          go(FORWARD)
         end
       end
     end
     if width < tankWidth then
       if left then
         turtle.turnLeft()
-        move(FORWARD)
+        go(FORWARD)
         turtle.turnLeft()
       else
         turtle.turnRight()
-        move(FORWARD)
+        go(FORWARD)
         turtle.turnRight()
       end	
       left = not left
@@ -275,7 +275,7 @@ for height = 1, tankHeight do
     end
   end
 
-  move(UP)
+  go(UP)
   turtle.turnLeft()
   turtle.turnLeft()
 
