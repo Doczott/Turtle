@@ -112,8 +112,9 @@ function place(dir)
   else 
     if dir == FRONT then
       det = turtle.place()
-	else
-	  det = turtle.placeUp()
+    else
+      det = turtle.placeUp()
+    end
 	end
   return det
 end
@@ -124,9 +125,10 @@ function detect(dir)
   else 
     if dir == FRONT then
       det = turtle.detect()
-	else
-	  det = turtle.detectUp()
-	end
+    else
+      det = turtle.detectUp()
+    end
+  end
   return det
 end
 
@@ -136,9 +138,10 @@ function dig(dir)
   else 
     if dir == FRONT then
       det = turtle.dig()
-	else
-	  det = turtle.digUp()
-	end
+    else
+      det = turtle.digUp()
+    end
+  end
   return det
 end
 
@@ -148,9 +151,10 @@ function suck(dir)
   else 
     if dir == FRONT then
       det = turtle.suck()
-	else
-	  det = turtle.suckUp()
-	end
+    else
+      det = turtle.suckUp()
+    end
+  end
   return det
 end
 
@@ -160,9 +164,10 @@ function drop(dir)
   else 
     if dir == FRONT then
       det = turtle.drop()
-	else
-	  det = turtle.dropUp()
-	end
+    else
+      det = turtle.dropUp()
+    end
+  end
   return det
 end
 
