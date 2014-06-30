@@ -232,17 +232,12 @@ for height = 1, tankHeight do
         tw = width == 1 or width == tankWidth
         tl = length == 1 or length == tankLength
 
-        if th and tw then
+        if (th and tw) or (th and tl) or (tw and tl) then
           currentSlot = edgeSlot
-        else if th and tl then
-            currentSlot = edgeSlot
-          else if tw and tl then
-              currentSlot = edgeSlot
-            else
-              currentSlot = sideSlot
-            end
-          end
+        else
+          currentSlot = sideSlot
         end
+        
         -- print(currentSlot)
         vs = height == 2 and width == (tankWidth - 1) and (tank < multiTank or (multiTank == 1 and length < tankLength))
         if vs then
@@ -254,7 +249,7 @@ for height = 1, tankHeight do
           placeBlock(currentSlot)
         end
 
-        if length < tankLength then
+        if length < tankLength or tank < multiTank then
           go(FORWARD)
         end
       end
