@@ -213,8 +213,8 @@ end
 
 -- This is where the code starts running.
 load()
-moveForward()
-moveUp()
+move(FORWARD)
+move(UP)
 left = true
 if multiTank == null then
   multiTank = 1
