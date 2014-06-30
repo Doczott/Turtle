@@ -64,6 +64,14 @@ end
 
 function go(dir)
   moved = false
+  while detect(UP) do
+    turtle.select(mSlot)
+    dig(UP)
+    if checkStorage() and not detect(UP) then
+      emptyStorage(UP)
+    end
+    sleep(0.5)
+  end
   while not moved do
     if move(dir) then
       moved = true
