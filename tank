@@ -195,7 +195,7 @@ function unload()
     sleep(1)
   end
   turtle.select(enderSlot)
-  dir(dir)
+  dig(dir)
 end
 
 function load()
