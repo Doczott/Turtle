@@ -172,9 +172,10 @@ function move(dir)
   else 
     if dir == FORWARD then
       det = turtle.forward()
-	else
-	  det = turtle.up()
-	end
+    else
+      det = turtle.up()
+    end
+  end
   return det
 end
 
